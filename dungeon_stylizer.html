@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>⚔ Dungeon Stylizer ⚔</title>
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='4' fill='%230a1405'/%3E%3Crect x='1' y='1' width='30' height='30' rx='3' fill='none' stroke='%232d5010' stroke-width='1'/%3E%3C!-- sword blade --%3E%3Crect x='15' y='3' width='2' height='18' rx='1' fill='%23e0b030'/%3E%3C!-- crossguard --%3E%3Crect x='9' y='17' width='14' height='2.5' rx='1' fill='%23c8981e'/%3E%3C!-- grip --%3E%3Crect x='15.2' y='19.5' width='1.6' height='6' rx='0.8' fill='%237aa030'/%3E%3C!-- pommel --%3E%3Cellipse cx='16' cy='27' rx='2.2' ry='2' fill='%23c8981e'/%3E%3C!-- blade shine --%3E%3Crect x='15.6' y='4' width='0.6' height='12' rx='0.3' fill='%23f0d060' opacity='0.5'/%3E%3C/svg%3E">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='4' fill='%230a1405'/%3E%3Crect x='1' y='1' width='30' height='30' rx='3' fill='none' stroke='%232d5010' stroke-width='1'/%3E%3Crect x='15' y='3' width='2' height='18' rx='1' fill='%23e0b030'/%3E%3Crect x='9' y='17' width='14' height='2.5' rx='1' fill='%23c8981e'/%3E%3Crect x='15.2' y='19.5' width='1.6' height='6' rx='0.8' fill='%237aa030'/%3E%3Cellipse cx='16' cy='27' rx='2.2' ry='2' fill='%23c8981e'/%3E%3Crect x='15.6' y='4' width='0.6' height='12' rx='0.3' fill='%23f0d060' opacity='0.5'/%3E%3C/svg%3E">
 <style>
 @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
 
@@ -17,44 +17,80 @@
   --grn:#5a7820;--grn2:#7aa030;
   --muted:#3a5018;--txt:#a89040;
   --font:'VT323',monospace;
+  /* sprite accent */
+  --sp0:#0d0a03;--spbord:#4a2a00;--spbord2:#6a3a00;
+  --spgold:#c87020;--spmuted:#7a4a18;
 }
 
 html,body{min-height:100%;background:var(--bg0);color:var(--txt);font-family:var(--font);font-size:16px;line-height:1.4}
-
 .wrap{max-width:900px;margin:0 auto;padding:2rem 1rem 4rem}
 
-header{text-align:center;margin-bottom:1.8rem;padding-bottom:1rem;border-bottom:1px solid var(--bord2)}
-header h1{font-size:2.8rem;font-weight:400;color:var(--gold2);letter-spacing:6px;margin-bottom:4px}
+/* ── HEADER ── */
+header{text-align:center;margin-bottom:0;padding-bottom:1rem}
+header h1{font-size:2.8rem;font-weight:400;color:var(--gold2);letter-spacing:6px;margin-bottom:6px}
 header p{font-size:13px;color:var(--muted);letter-spacing:3px;text-transform:uppercase}
 
+/* ── MODE TABS (below header) ── */
+.mode-tabs{display:flex;justify-content:center;gap:0;margin-bottom:1.6rem;margin-top:1rem;border-bottom:1px solid var(--bord2)}
+.mode-tab{font-family:var(--font);font-size:16px;letter-spacing:3px;text-transform:uppercase;padding:8px 28px;cursor:pointer;border:1px solid transparent;border-bottom:none;border-radius:3px 3px 0 0;background:transparent;color:var(--muted);transition:background .15s,color .15s;position:relative;bottom:-1px}
+.mode-tab:hover:not(.on){background:#0d1a07;color:var(--txt)}
+.mode-tab.on{background:var(--bg1);color:var(--gold2);border-color:var(--bord2);border-bottom:1px solid var(--bg1)}
+.mode-tab.spr-tab{color:var(--spmuted)}
+.mode-tab.spr-tab:hover:not(.on){background:#120a03;color:var(--spgold)}
+.mode-tab.spr-tab.on{color:var(--spgold);border-color:var(--spbord);border-bottom:1px solid var(--bg1)}
+
+/* mode content panels */
+.mode-page{display:none}
+.mode-page.on{display:block}
+
+/* ── PANEL ── */
 .panel{background:var(--bg1);border:1px solid var(--bord);border-radius:2px;padding:1.2rem 1.4rem;margin-bottom:1.2rem}
 .ptitle{font-size:12px;color:var(--grn2);letter-spacing:3px;text-transform:uppercase;margin-bottom:.9rem;border-bottom:1px solid var(--bord);padding-bottom:6px}
 
+/* sprite panel variant */
+.spanel{background:var(--sp0);border-color:var(--spbord)}
+.spanel .ptitle{color:var(--spgold);border-color:var(--spbord)}
+
+/* ── UPLOAD ── */
 .drop{border:1px dashed var(--bord2);background:#070d03;border-radius:2px;min-height:130px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:border-color .15s,background .15s;text-align:center;padding:1rem;user-select:none}
 .drop:hover,.drop.drag{border-color:var(--grn2);background:#0d1a06}
+.drop.spr-drop{border-color:var(--spbord)}
+.drop.spr-drop:hover,.drop.spr-drop.drag{border-color:var(--spgold);background:#120a03}
 .drop .ico{font-size:2.4rem;opacity:.4;margin-bottom:8px}
 .drop .hint{font-size:15px;color:var(--muted)}
 .drop .hint small{color:var(--grn);font-size:12px;display:block;margin-top:2px}
+.spr-drop .hint{color:var(--spmuted)}
+.spr-drop .hint small{color:var(--spbord2)}
 input[type=file]{display:none}
 
+/* ── GRIDS ── */
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
 .g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem}
 @media(max-width:580px){.g2,.g3{grid-template-columns:1fr}}
 
+/* ── CTRL ── */
 .ctrl{display:flex;flex-direction:column;gap:5px}
 .clabel{font-size:12px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;display:flex;justify-content:space-between}
 .clabel b{color:var(--gold);font-weight:400}
+.sclabel{font-size:12px;color:var(--spmuted);letter-spacing:2px;text-transform:uppercase;display:flex;justify-content:space-between}
+.sclabel b{color:var(--spgold);font-weight:400}
 
 input[type=range]{-webkit-appearance:none;width:100%;height:3px;background:var(--bord2);border-radius:2px;outline:none;cursor:pointer}
 input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:1px;background:var(--grn2);border:1px solid var(--gold);cursor:pointer}
 input[type=range]::-moz-range-thumb{width:14px;height:14px;border-radius:1px;background:var(--grn2);border:none;cursor:pointer}
+.spr-range{accent-color:var(--spgold)}
+.spr-range::-webkit-slider-thumb{background:var(--spgold);border-color:var(--spbord2)}
 
 select{background:#070d03;border:1px solid var(--bord2);color:var(--txt);font-family:var(--font);font-size:15px;padding:5px 8px;width:100%;border-radius:2px;cursor:pointer;outline:none}
 select:focus{border-color:var(--grn2)}
+.spr-select{background:#0d0a03;border-color:var(--spbord);color:var(--txt)}
+.spr-select:focus{border-color:var(--spgold)}
 
+/* ── SWATCHES ── */
 .swatches{display:flex;gap:3px;flex-wrap:wrap;margin-top:5px}
 .sw{width:16px;height:16px;border:1px solid var(--bord);border-radius:1px;flex-shrink:0}
 
+/* ── TOGGLE ROW ── */
 .otop{display:flex;align-items:center;gap:12px;margin-bottom:.9rem;padding-bottom:6px;border-bottom:1px solid var(--bord)}
 .otop .ptitle{margin:0;padding:0;border:none}
 .togwrap{display:flex;align-items:center;gap:7px;cursor:pointer;user-select:none}
@@ -63,51 +99,74 @@ select:focus{border-color:var(--grn2)}
 .octrl{transition:opacity .2s}
 .octrl.off{opacity:.3;pointer-events:none}
 
+/* ── MISC ── */
 hr{border:none;border-top:1px solid var(--bord);margin:1rem 0}
+.shr{border:none;border-top:1px solid var(--spbord);margin:1rem 0}
 
+/* ── BUTTONS ── */
 .btn{display:block;width:100%;border-radius:2px;font-family:var(--font);font-size:20px;letter-spacing:4px;text-transform:uppercase;cursor:pointer;padding:10px;transition:background .15s,opacity .15s;border:none}
 .btn:disabled{opacity:.35;cursor:not-allowed}
 .btn-go{background:#162808;border:1px solid var(--bord2);color:var(--gold2)}
 .btn-go:not(:disabled):hover{background:#1e3a0c}
+.btn-go-spr{background:#1a0e00;border:1px solid var(--spbord2);color:var(--spgold)}
+.btn-go-spr:not(:disabled):hover{background:#261400}
 .btn-dl{background:#0f1e06;border:1px solid var(--grn);color:var(--grn2);font-size:16px;margin-top:.5rem}
 .btn-dl:hover{background:#152a08}
+.btn-dl-spr{background:#120a00;border:1px solid var(--spbord2);color:var(--spgold);font-size:16px;margin-top:.5rem}
+.btn-dl-spr:hover{background:#1e1000}
 
-#prog{display:none;height:4px;background:var(--bord);border-radius:2px;margin-bottom:.8rem;overflow:hidden}
-#progbar{height:100%;width:0;background:var(--grn2);transition:width .1s}
-#status{text-align:center;font-size:13px;color:var(--grn);letter-spacing:2px;min-height:20px;margin-bottom:.6rem}
+/* ── PROGRESS / STATUS ── */
+.prog{display:none;height:4px;background:var(--bord);border-radius:2px;margin-bottom:.8rem;overflow:hidden}
+.prog-bar{height:100%;width:0;background:var(--grn2);transition:width .1s}
+.status{text-align:center;font-size:13px;color:var(--grn);letter-spacing:2px;min-height:20px;margin-bottom:.6rem}
+.spr-prog-bar{background:var(--spgold)}
+.spr-status{color:var(--spgold)}
 
-/* TABS */
-.tabs{display:flex;margin-bottom:-1px;position:relative;z-index:1}
+/* ── RESULT TABS ── */
+.tabs{display:flex;margin-bottom:-1px;position:relative;z-index:1;flex-wrap:wrap}
 .tabbt{background:#070d03;border:1px solid var(--bord);border-bottom:none;color:var(--muted);font-family:var(--font);font-size:13px;letter-spacing:2px;padding:5px 16px;cursor:pointer;text-transform:uppercase;transition:background .12s,color .12s;border-radius:2px 2px 0 0}
 .tabbt.on{background:var(--bg1);color:var(--gold2);border-color:var(--bord2);border-bottom:1px solid var(--bg1)}
 .tabbt:hover:not(.on){background:#0d1a07;color:var(--txt)}
+/* sprite result tabs */
+.stabbt{background:#0d0800;border:1px solid var(--spbord);border-bottom:none;color:var(--spmuted);font-family:var(--font);font-size:13px;letter-spacing:2px;padding:5px 16px;cursor:pointer;text-transform:uppercase;transition:background .12s,color .12s;border-radius:2px 2px 0 0}
+.stabbt.on{background:var(--bg1);color:var(--spgold);border-color:var(--spbord2);border-bottom:1px solid var(--bg1)}
+.stabbt:hover:not(.on){background:#160e04;color:var(--txt)}
 .tabp{display:none}
 .tabp.on{display:block}
 
-/* PREVIEW FRAME */
+/* ── PREVIEW FRAME ── */
 .pframe{background:#040804;border:1px solid var(--bord2);border-radius:0 2px 2px 2px;padding:10px;position:relative;overflow:hidden;min-height:60px}
 .pframe::before,.pframe::after{content:'';position:absolute;width:12px;height:12px;border-color:var(--gold);border-style:solid;pointer-events:none;z-index:3}
 .pframe::before{top:4px;left:4px;border-width:2px 0 0 2px}
 .pframe::after{bottom:4px;right:4px;border-width:0 2px 2px 0}
 
-/* PLACEHOLDER */
+/* sprite preview frame — checkerboard */
+.spr-frame{background:repeating-conic-gradient(#0e0e0e 0% 25%,#1a1a1a 0% 50%) 0 0/16px 16px;border:1px solid var(--spbord);border-radius:0 2px 2px 2px;padding:10px;position:relative;overflow:hidden;min-height:60px}
+.spr-frame::before,.spr-frame::after{content:'';position:absolute;width:12px;height:12px;border-color:var(--spgold);border-style:solid;pointer-events:none;z-index:3}
+.spr-frame::before{top:4px;left:4px;border-width:2px 0 0 2px}
+.spr-frame::after{bottom:4px;right:4px;border-width:0 2px 2px 0}
+
+/* ── PLACEHOLDER ── */
 .ph{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:120px;color:#1e3008;font-size:13px;letter-spacing:2px;gap:8px;text-align:center}
 .ph .pi{font-size:2.5rem;opacity:.18}
+.sph{color:#3a1a00}
 
-/* RESULT CANVAS */
-#dstCanvas{display:none;width:100%;height:auto;image-rendering:pixelated;cursor:crosshair}
+/* ── CANVAS ── */
+.res-canvas{display:none;width:100%;height:auto;image-rendering:pixelated;cursor:crosshair}
 
-/* INFO BAR */
+/* ── INFO BAR ── */
 .pinfo{display:none;justify-content:space-between;align-items:center;margin-top:8px;font-size:12px;color:var(--muted);letter-spacing:1px;flex-wrap:wrap;gap:4px}
 .pinfo .dim{color:var(--grn2)}
 .pinfo .zhi{color:#2d5010;font-size:11px}
+.pinfo .sdim{color:var(--spgold)}
+.pinfo .szhi{color:var(--spbord2);font-size:11px}
 
-/* ZOOM LENS */
+/* ── ZOOM LENS ── */
 #lens{display:none;position:fixed;width:176px;height:176px;border:2px solid var(--gold);border-radius:2px;pointer-events:none;z-index:9999;overflow:hidden;background:#040804;box-shadow:0 4px 20px #000a}
 #lensCanvas{position:absolute;top:0;left:0;image-rendering:pixelated}
 #lensLabel{position:absolute;bottom:3px;right:5px;font-family:var(--font);font-size:12px;color:var(--gold);letter-spacing:1px}
 
-/* SPLIT */
+/* ── SPLIT ── */
 .spwrap{position:relative;overflow:hidden;cursor:ew-resize;user-select:none;display:none;line-height:0}
 .spwrap canvas{display:block;width:100%;height:auto;image-rendering:pixelated;pointer-events:none}
 .spover{position:absolute;top:0;left:0;height:100%;overflow:hidden;pointer-events:none}
@@ -118,170 +177,321 @@ hr{border:none;border-top:1px solid var(--bord);margin:1rem 0}
 .splbl-l{left:8px;color:var(--muted)}
 .splbl-r{right:8px;color:var(--gold2)}
 
-/* GRID VIEW */
+/* ── GRID VIEW ── */
 .gview{display:none;grid-template-columns:1fr 1fr;gap:8px}
 @media(max-width:480px){.gview{grid-template-columns:1fr}}
 .gvbox{display:flex;flex-direction:column;gap:4px}
 .gvtag{font-size:11px;color:var(--muted);letter-spacing:2px;text-transform:uppercase}
 .gvbox canvas{display:block;width:100%;height:auto;image-rendering:pixelated;border:1px solid var(--bord)}
+
+/* ── COLOR PICKER ── */
+.color-row{display:flex;align-items:center;gap:8px}
+.color-row input[type=color]{width:36px;height:28px;border:1px solid var(--bord2);border-radius:2px;background:none;padding:1px;cursor:pointer}
+.color-row input[type=color]::-webkit-color-swatch-wrapper{padding:0}
+.color-row input[type=color]::-webkit-color-swatch{border:none;border-radius:1px}
+.color-hex{font-size:14px;color:var(--gold);letter-spacing:1px;width:62px}
 </style>
 </head>
 <body>
 <div class="wrap">
 
+<!-- HEADER -->
 <header>
   <h1>⚔ DUNGEON STYLIZER ⚔</h1>
-  <p>Conversor de Imagens · Estilo RPG dos Anos 80</p>
+  <p>Image Converter · 80s RPG Style</p>
 </header>
 
-<!-- I UPLOAD -->
-<div class="panel">
-  <div class="ptitle">[ I ] Carregar Imagem</div>
-  <div class="drop" id="drop">
-    <div class="ico">🗡</div>
-    <div class="hint">Arraste uma imagem aqui<small>ou clique para selecionar (PNG, JPG, WEBP…)</small></div>
-  </div>
-  <input type="file" id="filein" accept="image/*">
+<!-- MODE TABS -->
+<div class="mode-tabs">
+  <button class="mode-tab on"     onclick="switchMode('scene',this)">🏰 Scene Converter</button>
+  <button class="mode-tab spr-tab" onclick="switchMode('sprite',this)">🧙 Sprite Converter</button>
 </div>
 
-<!-- II STYLE -->
-<div class="panel">
-  <div class="ptitle">[ II ] Estilo &amp; Paleta</div>
-  <div class="g2" style="margin-bottom:1rem">
-    <div class="ctrl">
-      <div class="clabel">Paleta <b id="lPal">Dungeon Verde/Ouro</b></div>
-      <select id="selPal" onchange="updateSwatches()">
-        <option value="dungeon">Dungeon (Verde / Ouro)</option>
-        <option value="beholder">Beholder (Escuro / Ciano)</option>
-        <option value="ruins">Ruínas (Ocre / Sépia)</option>
-        <option value="necro">Necromancy (Verde Lima)</option>
-        <option value="blood">Blood (Vermelho / Negro)</option>
-      </select>
-      <div class="swatches" id="swatches"></div>
-    </div>
-    <div class="ctrl">
-      <div class="clabel">Dithering</div>
-      <select id="selDith">
-        <option value="ordered4">Ordered 4×4</option>
-        <option value="ordered8">Ordered 8×8</option>
-        <option value="floyd">Floyd-Steinberg</option>
-        <option value="atkinson">Atkinson</option>
-        <option value="none">Nenhum</option>
-      </select>
-    </div>
-  </div>
-  <div class="g3">
-    <div class="ctrl"><div class="clabel">Pixel Size <b id="vPx">2</b>px</div>
-      <input type="range" id="rPx" min="1" max="8" value="2" step="1" oninput="V('vPx',this.value)"></div>
-    <div class="ctrl"><div class="clabel">Contraste <b id="vCo">1.4</b>x</div>
-      <input type="range" id="rCo" min="0.5" max="3.5" value="1.4" step="0.1" oninput="V('vCo',f1(this.value))"></div>
-    <div class="ctrl"><div class="clabel">Escuridão <b id="vDk">0.70</b></div>
-      <input type="range" id="rDk" min="0.2" max="1.0" value="0.70" step="0.05" oninput="V('vDk',f2(this.value))"></div>
-    <div class="ctrl"><div class="clabel">Noise <b id="vNo">12</b></div>
-      <input type="range" id="rNo" min="0" max="60" value="12" step="1" oninput="V('vNo',this.value)"></div>
-    <div class="ctrl"><div class="clabel">Saturação <b id="vSa">0.6</b></div>
-      <input type="range" id="rSa" min="0" max="2" value="0.6" step="0.05" oninput="V('vSa',f2(this.value))"></div>
-    <div class="ctrl"><div class="clabel">Resolução <b id="vRe">320</b>px</div>
-      <input type="range" id="rRe" min="120" max="800" value="320" step="8" oninput="V('vRe',this.value)"></div>
-  </div>
-</div>
+<!-- ══════════════════════════════════════
+     MODE: SCENE CONVERTER
+══════════════════════════════════════ -->
+<div class="mode-page on" id="mode-scene">
 
-<!-- III OUTLINE -->
-<div class="panel">
-  <div class="otop">
-    <div class="ptitle">[ III ] Contorno Estilo Dungeon</div>
-    <div class="togwrap">
-      <input type="checkbox" id="chkOut" onchange="toggleOutline()">
-      <label for="chkOut">Ativar contorno</label>
+  <!-- I · UPLOAD -->
+  <div class="panel">
+    <div class="ptitle">[ I ] Load Image</div>
+    <div class="drop" id="drop">
+      <div class="ico">🗡</div>
+      <div class="hint">Drag an image here <small>or click to select (PNG, JPG, WEBP…)</small></div>
     </div>
+    <input type="file" id="filein" accept="image/*">
   </div>
-  <div class="octrl off" id="outCtrl">
+
+  <!-- II · STYLE -->
+  <div class="panel">
+    <div class="ptitle">[ II ] Style &amp; Palette</div>
+    <div class="g2" style="margin-bottom:1rem">
+      <div class="ctrl">
+        <div class="clabel">Palette <b id="lPal">Dungeon Green/Gold</b></div>
+        <select id="selPal" onchange="updateSwatches()">
+          <option value="dungeon">Dungeon (Green / Gold)</option>
+          <option value="beholder">Beholder (Dark / Cyan)</option>
+          <option value="ruins">Ruins (Ochre / Sepia)</option>
+          <option value="necro">Necromancy (Lime Green)</option>
+          <option value="blood">Blood (Red / Black)</option>
+        </select>
+        <div class="swatches" id="swatches"></div>
+      </div>
+      <div class="ctrl">
+        <div class="clabel">Dithering</div>
+        <select id="selDith">
+          <option value="ordered4">Ordered 4×4</option>
+          <option value="ordered8">Ordered 8×8</option>
+          <option value="floyd">Floyd-Steinberg</option>
+          <option value="atkinson">Atkinson</option>
+          <option value="none">None</option>
+        </select>
+      </div>
+    </div>
     <div class="g3">
-      <div class="ctrl"><div class="clabel">Sensibilidade <b id="vEs">60</b></div>
-        <input type="range" id="rEs" min="5" max="200" value="60" step="1" oninput="V('vEs',this.value)"></div>
-      <div class="ctrl"><div class="clabel">Espessura <b id="vEw">1</b>px</div>
-        <input type="range" id="rEw" min="1" max="5" value="1" step="1" oninput="V('vEw',this.value)"></div>
-      <div class="ctrl"><div class="clabel">Irregularidade <b id="vEi">8</b></div>
-        <input type="range" id="rEi" min="0" max="30" value="8" step="1" oninput="V('vEi',this.value)"></div>
-      <div class="ctrl"><div class="clabel">Cor do contorno</div>
-        <select id="selEc">
-          <option value="gold">Dourado (referência)</option>
-          <option value="green">Verde escuro</option>
-          <option value="white">Branco sujo</option>
-          <option value="auto">Auto (paleta)</option>
-        </select></div>
-      <div class="ctrl"><div class="clabel">Opacidade <b id="vEo">0.90</b></div>
-        <input type="range" id="rEo" min="0.1" max="1" value="0.90" step="0.05" oninput="V('vEo',f2(this.value))"></div>
-      <div class="ctrl"><div class="clabel">Grain <b id="vEg">15</b></div>
-        <input type="range" id="rEg" min="0" max="50" value="15" step="1" oninput="V('vEg',this.value)"></div>
-    </div>
-  </div>
-</div>
-
-<!-- IV RESULT -->
-<div class="panel">
-  <div class="ptitle">[ IV ] Resultado</div>
-
-  <div id="status">Aguardando imagem…</div>
-  <div id="prog"><div id="progbar"></div></div>
-
-  <div class="tabs">
-    <button class="tabbt on" onclick="switchTab('sty',this)">Stylizado</button>
-    <button class="tabbt"    onclick="switchTab('cmp',this)">Comparar</button>
-    <button class="tabbt"    onclick="switchTab('grd',this)">Lado a lado</button>
-  </div>
-
-  <!-- Stylizado -->
-  <div class="tabp on" id="tab-sty">
-    <div class="pframe">
-      <div class="ph" id="ph1"><div class="pi">🗡</div>Converta uma imagem para ver o resultado</div>
-      <canvas id="dstCanvas"
-        onmouseenter="lensMove(event,this)"
-        onmousemove="lensMove(event,this)"
-        onmouseleave="lensHide()"></canvas>
-    </div>
-    <div class="pinfo" id="pinfo">
-      <span>Saída: <span class="dim" id="infoDim">—</span></span>
-      <span class="zhi">⊕ Passe o mouse para zoom 4×</span>
-      <span>Paleta: <span class="dim" id="infoPal">—</span></span>
+      <div class="ctrl"><div class="clabel">Pixel Size <b id="vPx">2</b>px</div>
+        <input type="range" id="rPx" min="1" max="8" value="2" step="1" oninput="V('vPx',this.value)"></div>
+      <div class="ctrl"><div class="clabel">Contrast <b id="vCo">1.4</b>×</div>
+        <input type="range" id="rCo" min="0.5" max="3.5" value="1.4" step="0.1" oninput="V('vCo',f1(this.value))"></div>
+      <div class="ctrl"><div class="clabel">Darkness <b id="vDk">0.70</b></div>
+        <input type="range" id="rDk" min="0.2" max="1.0" value="0.70" step="0.05" oninput="V('vDk',f2(this.value))"></div>
+      <div class="ctrl"><div class="clabel">Noise <b id="vNo">12</b></div>
+        <input type="range" id="rNo" min="0" max="60" value="12" step="1" oninput="V('vNo',this.value)"></div>
+      <div class="ctrl"><div class="clabel">Saturation <b id="vSa">0.6</b></div>
+        <input type="range" id="rSa" min="0" max="2" value="0.6" step="0.05" oninput="V('vSa',f2(this.value))"></div>
+      <div class="ctrl"><div class="clabel">Resolution <b id="vRe">320</b>px</div>
+        <input type="range" id="rRe" min="120" max="800" value="320" step="8" oninput="V('vRe',this.value)"></div>
     </div>
   </div>
 
-  <!-- Comparar -->
-  <div class="tabp" id="tab-cmp">
-    <div class="pframe">
-      <div class="ph" id="ph2"><div class="pi">⚔</div>Converta para comparar</div>
-      <div class="spwrap" id="spwrap"
-        onmousedown="spStart(event)"
-        ontouchstart="spStart(event)">
-        <canvas id="spSrc"></canvas>
-        <div class="spover" id="spover"><canvas id="spDst"></canvas></div>
-        <div class="spdiv" id="spdiv"></div>
-        <div class="sphand" id="sphand">⟺</div>
-        <div class="splbl splbl-l">Original</div>
-        <div class="splbl splbl-r">Stylizado</div>
+  <!-- III · OUTLINE -->
+  <div class="panel">
+    <div class="otop">
+      <div class="ptitle">[ III ] Dungeon Outline</div>
+      <div class="togwrap">
+        <input type="checkbox" id="chkOut" onchange="toggleOutline()">
+        <label for="chkOut">Enable outline</label>
+      </div>
+    </div>
+    <div class="octrl off" id="outCtrl">
+      <div class="g3">
+        <div class="ctrl"><div class="clabel">Sensitivity <b id="vEs">60</b></div>
+          <input type="range" id="rEs" min="5" max="200" value="60" step="1" oninput="V('vEs',this.value)"></div>
+        <div class="ctrl"><div class="clabel">Thickness <b id="vEw">1</b>px</div>
+          <input type="range" id="rEw" min="1" max="5" value="1" step="1" oninput="V('vEw',this.value)"></div>
+        <div class="ctrl"><div class="clabel">Irregularity <b id="vEi">8</b></div>
+          <input type="range" id="rEi" min="0" max="30" value="8" step="1" oninput="V('vEi',this.value)"></div>
+        <div class="ctrl"><div class="clabel">Outline Color</div>
+          <select id="selEc">
+            <option value="gold">Gold (reference)</option>
+            <option value="green">Dark Green</option>
+            <option value="white">Dirty White</option>
+            <option value="auto">Auto (palette)</option>
+          </select></div>
+        <div class="ctrl"><div class="clabel">Opacity <b id="vEo">0.90</b></div>
+          <input type="range" id="rEo" min="0.1" max="1" value="0.90" step="0.05" oninput="V('vEo',f2(this.value))"></div>
+        <div class="ctrl"><div class="clabel">Grain <b id="vEg">15</b></div>
+          <input type="range" id="rEg" min="0" max="50" value="15" step="1" oninput="V('vEg',this.value)"></div>
       </div>
     </div>
   </div>
 
-  <!-- Grid -->
-  <div class="tabp" id="tab-grd">
-    <div class="pframe">
-      <div class="ph" id="ph3"><div class="pi">⚔</div>Converta para comparar</div>
-      <div class="gview" id="gview">
-        <div class="gvbox"><div class="gvtag">Original</div><canvas id="gSrc"></canvas></div>
-        <div class="gvbox"><div class="gvtag">Stylizado</div><canvas id="gDst"></canvas></div>
+  <!-- IV · RESULT -->
+  <div class="panel">
+    <div class="ptitle">[ IV ] Result</div>
+    <div class="status" id="status">Waiting for image…</div>
+    <div class="prog" id="prog"><div class="prog-bar" id="progbar"></div></div>
+
+    <div class="tabs">
+      <button class="tabbt on" onclick="switchTab('sty',this)">Stylized</button>
+      <button class="tabbt"    onclick="switchTab('cmp',this)">Compare</button>
+      <button class="tabbt"    onclick="switchTab('grd',this)">Side by Side</button>
+    </div>
+
+    <div class="tabp on" id="tab-sty">
+      <div class="pframe">
+        <div class="ph" id="ph1"><div class="pi">🗡</div>Convert an image to see the result</div>
+        <canvas class="res-canvas" id="dstCanvas"
+          onmouseenter="lensMove(event,this)" onmousemove="lensMove(event,this)" onmouseleave="lensHide()"></canvas>
       </div>
+      <div class="pinfo" id="pinfo">
+        <span>Output: <span class="dim" id="infoDim">—</span></span>
+        <span class="zhi">⊕ Hover for 4× zoom</span>
+        <span>Palette: <span class="dim" id="infoPal">—</span></span>
+      </div>
+    </div>
+
+    <div class="tabp" id="tab-cmp">
+      <div class="pframe">
+        <div class="ph" id="ph2"><div class="pi">⚔</div>Convert to compare</div>
+        <div class="spwrap" id="spwrap" onmousedown="spStart(event)" ontouchstart="spStart(event)">
+          <canvas id="spSrc"></canvas>
+          <div class="spover" id="spover"><canvas id="spDst"></canvas></div>
+          <div class="spdiv" id="spdiv"></div>
+          <div class="sphand" id="sphand">⟺</div>
+          <div class="splbl splbl-l">Original</div>
+          <div class="splbl splbl-r">Stylized</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tabp" id="tab-grd">
+      <div class="pframe">
+        <div class="ph" id="ph3"><div class="pi">⚔</div>Convert to compare</div>
+        <div class="gview" id="gview">
+          <div class="gvbox"><div class="gvtag">Original</div><canvas id="gSrc"></canvas></div>
+          <div class="gvbox"><div class="gvtag">Stylized</div><canvas id="gDst"></canvas></div>
+        </div>
+      </div>
+    </div>
+
+    <hr>
+    <button class="btn btn-go"  id="btnConv" disabled onclick="doConvert()">⚔ CONVERT ⚔</button>
+    <button class="btn btn-dl"  id="btnDl"   style="display:none" onclick="doDownload()">⬇ DOWNLOAD IMAGE ⬇</button>
+  </div>
+
+</div><!-- /mode-scene -->
+
+
+<!-- ══════════════════════════════════════
+     MODE: SPRITE CONVERTER
+══════════════════════════════════════ -->
+<div class="mode-page" id="mode-sprite">
+
+  <!-- I · UPLOAD -->
+  <div class="panel spanel">
+    <div class="ptitle">[ I ] Load Sprite Image</div>
+    <div class="drop spr-drop" id="dropSpr">
+      <div class="ico">🧙</div>
+      <div class="hint">Drag a character image here <small>or click to select (PNG, JPG, WEBP…)</small></div>
+    </div>
+    <input type="file" id="fileinSpr" accept="image/*">
+  </div>
+
+  <!-- II · SPRITE STYLE -->
+  <div class="panel spanel">
+    <div class="ptitle">[ II ] Sprite Style &amp; Palette</div>
+    <div class="g2" style="margin-bottom:1rem">
+      <div class="ctrl">
+        <div class="sclabel">Palette <b id="lSprPal">Warrior Sepia</b></div>
+        <select class="spr-select" id="selSprPal" onchange="updateSprSwatches()">
+          <option value="warrior">Warrior (Sepia / Ochre)</option>
+          <option value="mage">Mage (Purple / Silver)</option>
+          <option value="demon">Demon (Red / Shadow)</option>
+          <option value="undead">Undead (Green / Bone)</option>
+          <option value="iron">Iron (Grey / Cold Blue)</option>
+        </select>
+        <div class="swatches" id="sprSwatches"></div>
+      </div>
+      <div class="ctrl">
+        <div class="sclabel">Dithering</div>
+        <select class="spr-select" id="selSprDith">
+          <option value="atkinson">Atkinson (dense)</option>
+          <option value="ordered4">Ordered 4×4</option>
+          <option value="floyd">Floyd-Steinberg</option>
+          <option value="halftone">Halftone (dotted)</option>
+          <option value="none">None</option>
+        </select>
+      </div>
+    </div>
+    <div class="g3">
+      <div class="ctrl"><div class="sclabel">Density <b id="vSprDn">1.8</b>×</div>
+        <input type="range" class="spr-range" id="rSprDn" min="0.5" max="3.5" value="1.8" step="0.1" oninput="V('vSprDn',f1(this.value))"></div>
+      <div class="ctrl"><div class="sclabel">Contrast <b id="vSprCo">1.8</b>×</div>
+        <input type="range" class="spr-range" id="rSprCo" min="0.5" max="4" value="1.8" step="0.1" oninput="V('vSprCo',f1(this.value))"></div>
+      <div class="ctrl"><div class="sclabel">Pixel Size <b id="vSprPx">2</b>px</div>
+        <input type="range" class="spr-range" id="rSprPx" min="1" max="6" value="2" step="1" oninput="V('vSprPx',this.value)"></div>
+      <div class="ctrl"><div class="sclabel">Saturation <b id="vSprSa">1.4</b></div>
+        <input type="range" class="spr-range" id="rSprSa" min="0" max="3" value="1.4" step="0.1" oninput="V('vSprSa',f1(this.value))"></div>
+      <div class="ctrl"><div class="sclabel">Noise <b id="vSprNo">20</b></div>
+        <input type="range" class="spr-range" id="rSprNo" min="0" max="60" value="20" step="1" oninput="V('vSprNo',this.value)"></div>
+      <div class="ctrl"><div class="sclabel">Resolution <b id="vSprRe">320</b>px</div>
+        <input type="range" class="spr-range" id="rSprRe" min="80" max="600" value="320" step="8" oninput="V('vSprRe',this.value)"></div>
     </div>
   </div>
 
-  <hr>
-  <button class="btn btn-go" id="btnConv" disabled onclick="doConvert()">⚔ CONVERTER ⚔</button>
-  <button class="btn btn-dl" id="btnDl" style="display:none" onclick="doDownload()">⬇ BAIXAR IMAGEM ⬇</button>
-</div>
+  <!-- III · SPRITE OUTLINE -->
+  <div class="panel spanel">
+    <div class="ptitle">[ III ] Sprite Outline</div>
+    <div class="g3">
+      <div class="ctrl"><div class="sclabel">Thickness <b id="vSprEw">2</b>px</div>
+        <input type="range" class="spr-range" id="rSprEw" min="1" max="6" value="2" step="1" oninput="V('vSprEw',this.value)"></div>
+      <div class="ctrl">
+        <div class="sclabel">Outline Color</div>
+        <div class="color-row">
+          <input type="color" id="sprOutColor" value="#1a0a00"
+            oninput="$('sprHex').textContent=this.value.toUpperCase()">
+          <span class="color-hex" id="sprHex">#1A0A00</span>
+        </div>
+      </div>
+      <div class="ctrl"><div class="sclabel">Opacity <b id="vSprEo">1.0</b></div>
+        <input type="range" class="spr-range" id="rSprEo" min="0.3" max="1" value="1.0" step="0.05" oninput="V('vSprEo',f2(this.value))"></div>
+      <div class="ctrl"><div class="sclabel">Sensitivity <b id="vSprEs">40</b></div>
+        <input type="range" class="spr-range" id="rSprEs" min="5" max="180" value="40" step="1" oninput="V('vSprEs',this.value)"></div>
+      <div class="ctrl"><div class="sclabel">Grain <b id="vSprGr">8</b></div>
+        <input type="range" class="spr-range" id="rSprGr" min="0" max="40" value="8" step="1" oninput="V('vSprGr',this.value)"></div>
+    </div>
+  </div>
+
+  <!-- IV · RESULT -->
+  <div class="panel spanel">
+    <div class="ptitle">[ IV ] Result</div>
+    <div class="status spr-status" id="statusSpr">Waiting for image…</div>
+    <div class="prog" id="progSpr"><div class="prog-bar spr-prog-bar" id="progbarSpr"></div></div>
+
+    <div class="tabs">
+      <button class="stabbt on" onclick="switchSprTab('sty',this)">Stylized</button>
+      <button class="stabbt"    onclick="switchSprTab('cmp',this)">Compare</button>
+      <button class="stabbt"    onclick="switchSprTab('grd',this)">Side by Side</button>
+    </div>
+
+    <div class="tabp on" id="stab-sty">
+      <div class="spr-frame">
+        <div class="ph sph" id="sph1"><div class="pi">🧙</div>Convert an image to see the result</div>
+        <canvas class="res-canvas" id="sprCanvas"
+          onmouseenter="lensMove(event,this)" onmousemove="lensMove(event,this)" onmouseleave="lensHide()"></canvas>
+      </div>
+      <div class="pinfo" id="sprInfo">
+        <span>Output: <span class="sdim" id="sprDim">—</span></span>
+        <span class="szhi">⊕ Hover for 4× zoom</span>
+        <span>Palette: <span class="sdim" id="sprPalName">—</span></span>
+      </div>
+    </div>
+
+    <div class="tabp" id="stab-cmp">
+      <div class="spr-frame">
+        <div class="ph sph" id="sph2"><div class="pi">⚔</div>Convert to compare</div>
+        <div class="spwrap" id="spwrapSpr" onmousedown="spStartSpr(event)" ontouchstart="spStartSpr(event)">
+          <canvas id="sspSrc"></canvas>
+          <div class="spover" id="spoverSpr"><canvas id="sspDst"></canvas></div>
+          <div class="spdiv" id="spdivSpr"></div>
+          <div class="sphand" id="sphandSpr">⟺</div>
+          <div class="splbl splbl-l">Original</div>
+          <div class="splbl splbl-r" style="color:var(--spgold)">Stylized</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tabp" id="stab-grd">
+      <div class="spr-frame">
+        <div class="ph sph" id="sph3"><div class="pi">⚔</div>Convert to compare</div>
+        <div class="gview" id="sgview">
+          <div class="gvbox"><div class="gvtag">Original</div><canvas id="sgSrc"></canvas></div>
+          <div class="gvbox"><div class="gvtag">Stylized</div><canvas id="sgDst"></canvas></div>
+        </div>
+      </div>
+    </div>
+
+    <hr class="shr">
+    <button class="btn btn-go-spr" id="btnConvSpr" disabled onclick="doConvertSprite()">🧙 CONVERT SPRITE 🧙</button>
+    <button class="btn btn-dl-spr" id="btnDlSpr"   style="display:none" onclick="doDownloadSprite()">⬇ DOWNLOAD SPRITE ⬇</button>
+  </div>
+
+</div><!-- /mode-sprite -->
 
 </div><!-- /wrap -->
 
+<!-- ZOOM LENS -->
 <div id="lens"><canvas id="lensCanvas"></canvas><div id="lensLabel">4×</div></div>
 
 <script>
@@ -290,146 +500,136 @@ const V  = (id,v) => $(id).textContent = v;
 const f1 = v => parseFloat(v).toFixed(1);
 const f2 = v => parseFloat(v).toFixed(2);
 
+/* ── PALETTES ── */
 const PALS = {
-  dungeon:{name:'Dungeon Verde/Ouro',cols:[[4,7,2],[9,14,3],[18,28,7],[28,42,11],[38,57,15],[52,76,19],[67,95,23],[86,124,28],[108,152,33],[135,96,18],[158,115,28],[178,136,38],[198,157,48],[218,177,58],[175,145,45],[135,105,28],[95,65,9],[58,36,4],[28,18,2],[14,9,1]]},
-  beholder:{name:'Beholder Ciano',cols:[[2,3,7],[4,9,14],[9,18,28],[14,28,42],[18,46,58],[22,65,76],[28,95,95],[18,125,115],[14,155,135],[9,175,156],[7,145,126],[5,115,97],[4,87,68],[76,58,9],[95,76,14],[58,28,4],[28,14,2],[115,98,19],[135,118,28],[155,136,38]]},
-  ruins:{name:'Ruínas Sépia',cols:[[14,9,4],[28,18,9],[47,32,16],[67,47,23],[86,62,28],[107,76,33],[136,97,43],[165,120,52],[195,150,67],[215,176,86],[235,196,107],[185,146,58],[156,116,43],[126,92,33],[96,67,23],[67,43,14],[43,26,7],[23,13,3],[11,6,1],[175,136,76]]},
-  necro:{name:'Necromancy Lima',cols:[[2,4,2],[4,11,3],[9,23,7],[14,38,11],[18,57,14],[23,76,17],[28,107,20],[38,136,26],[57,165,33],[76,196,38],[96,215,47],[67,176,33],[47,136,23],[28,96,14],[18,67,7],[9,38,3],[4,18,1],[115,87,9],[97,67,7],[76,52,5]]},
-  blood:{name:'Blood Vermelho',cols:[[4,2,2],[10,4,4],[20,6,6],[35,8,8],[55,10,10],[80,14,14],[110,18,18],[140,22,22],[170,30,30],[200,40,40],[220,60,60],[180,35,25],[145,28,18],[105,20,12],[70,14,8],[40,8,4],[20,4,2],[90,70,20],[110,90,30],[60,50,10]]}
+  dungeon:{name:'Dungeon Green/Gold',cols:[[4,7,2],[9,14,3],[18,28,7],[28,42,11],[38,57,15],[52,76,19],[67,95,23],[86,124,28],[108,152,33],[135,96,18],[158,115,28],[178,136,38],[198,157,48],[218,177,58],[175,145,45],[135,105,28],[95,65,9],[58,36,4],[28,18,2],[14,9,1]]},
+  beholder:{name:'Beholder Cyan',cols:[[2,3,7],[4,9,14],[9,18,28],[14,28,42],[18,46,58],[22,65,76],[28,95,95],[18,125,115],[14,155,135],[9,175,156],[7,145,126],[5,115,97],[4,87,68],[76,58,9],[95,76,14],[58,28,4],[28,14,2],[115,98,19],[135,118,28],[155,136,38]]},
+  ruins:{name:'Ruins Sepia',cols:[[14,9,4],[28,18,9],[47,32,16],[67,47,23],[86,62,28],[107,76,33],[136,97,43],[165,120,52],[195,150,67],[215,176,86],[235,196,107],[185,146,58],[156,116,43],[126,92,33],[96,67,23],[67,43,14],[43,26,7],[23,13,3],[11,6,1],[175,136,76]]},
+  necro:{name:'Necromancy Lime',cols:[[2,4,2],[4,11,3],[9,23,7],[14,38,11],[18,57,14],[23,76,17],[28,107,20],[38,136,26],[57,165,33],[76,196,38],[96,215,47],[67,176,33],[47,136,23],[28,96,14],[18,67,7],[9,38,3],[4,18,1],[115,87,9],[97,67,7],[76,52,5]]},
+  blood:{name:'Blood Red',cols:[[4,2,2],[10,4,4],[20,6,6],[35,8,8],[55,10,10],[80,14,14],[110,18,18],[140,22,22],[170,30,30],[200,40,40],[220,60,60],[180,35,25],[145,28,18],[105,20,12],[70,14,8],[40,8,4],[20,4,2],[90,70,20],[110,90,30],[60,50,10]]}
+};
+const SPR_PALS = {
+  warrior:{name:'Warrior Sepia',cols:[[8,5,2],[18,10,4],[32,18,7],[50,28,10],[72,42,15],[98,58,20],[128,78,28],[158,100,38],[185,128,50],[205,152,68],[220,172,90],[200,148,60],[175,118,42],[145,90,28],[110,65,18],[75,42,10],[45,24,5],[22,12,2],[10,5,1],[240,200,110]]},
+  mage:{name:'Mage Purple/Silver',cols:[[5,3,10],[12,6,22],[22,10,40],[35,15,62],[50,22,88],[68,30,118],[90,40,150],[115,52,180],[140,68,205],[165,88,220],[185,110,230],[160,160,180],[130,130,160],[100,100,140],[70,70,110],[45,45,80],[25,25,55],[220,215,225],[240,235,245],[180,90,210]]},
+  demon:{name:'Demon Red',cols:[[8,2,2],[18,4,4],[32,7,6],[52,10,8],[78,14,10],[108,18,12],[140,22,14],[168,28,16],[190,38,20],[210,52,24],[225,75,30],[180,42,18],[145,30,12],[108,20,8],[72,12,5],[42,7,3],[22,3,2],[240,180,50],[220,140,30],[200,100,15]]},
+  undead:{name:'Undead Green/Bone',cols:[[3,5,2],[7,12,5],[12,22,8],[18,35,12],[25,52,16],[34,72,20],[45,95,25],[58,120,30],[75,148,36],[195,188,155],[210,205,175],[188,180,145],[168,158,118],[145,135,92],[118,108,68],[90,80,45],[62,52,25],[35,28,10],[16,12,4],[230,225,190]]},
+  iron:{name:'Iron Grey/Blue',cols:[[5,5,8],[10,10,16],[18,18,28],[28,28,42],[40,42,58],[55,58,75],[72,76,95],[92,96,118],[115,120,142],[138,145,165],[160,168,185],[182,188,202],[200,205,215],[215,218,225],[42,52,72],[55,68,95],[70,88,120],[88,112,148],[108,138,172],[130,162,195]]}
 };
 
+/* ── DITHER MATRICES ── */
 const M4=[[0,8,2,10],[12,4,14,6],[3,11,1,9],[15,7,13,5]];
 const M8=(()=>{const m=[];for(let y=0;y<8;y++){m[y]=[];for(let x=0;x<8;x++)m[y][x]=((x^y)*0x5d+x*y*0x13)&63;}return m;})();
+const MHALF=(()=>{const m=[];for(let y=0;y<8;y++){m[y]=[];for(let x=0;x<8;x++){const dx=x-3.5,dy=y-3.5;m[y][x]=Math.round((Math.sqrt(dx*dx+dy*dy)/4.95)*63);}}return m;})();
 
-let srcImg = null;
+/* ── STATE ── */
+let srcImg=null, srcSprImg=null;
 
-/* INIT */
+/* ── INIT ── */
 updateSwatches();
-const drop=$('drop'), fin=$('filein');
+updateSprSwatches();
+
+/* scene upload */
+const drop=$('drop'),fin=$('filein');
 drop.addEventListener('click',()=>fin.click());
 drop.addEventListener('dragover',e=>{e.preventDefault();drop.classList.add('drag')});
 drop.addEventListener('dragleave',()=>drop.classList.remove('drag'));
 drop.addEventListener('drop',e=>{e.preventDefault();drop.classList.remove('drag');if(e.dataTransfer.files[0])loadFile(e.dataTransfer.files[0])});
 fin.addEventListener('change',()=>{if(fin.files[0])loadFile(fin.files[0])});
 
+/* sprite upload */
+const dropSpr=$('dropSpr'),finSpr=$('fileinSpr');
+dropSpr.addEventListener('click',()=>finSpr.click());
+dropSpr.addEventListener('dragover',e=>{e.preventDefault();dropSpr.classList.add('drag')});
+dropSpr.addEventListener('dragleave',()=>dropSpr.classList.remove('drag'));
+dropSpr.addEventListener('drop',e=>{e.preventDefault();dropSpr.classList.remove('drag');if(e.dataTransfer.files[0])loadSprFile(e.dataTransfer.files[0])});
+finSpr.addEventListener('change',()=>{if(finSpr.files[0])loadSprFile(finSpr.files[0])});
+
 function loadFile(f){
   const r=new FileReader();
-  r.onload=ev=>{
-    const img=new Image();
-    img.onload=()=>{
-      srcImg=img;
-      $('btnConv').disabled=false;
-      setStatus('Imagem carregada: '+img.width+'×'+img.height+'px');
-      $('btnDl').style.display='none';
-    };
-    img.src=ev.target.result;
-  };
+  r.onload=ev=>{const img=new Image();img.onload=()=>{srcImg=img;$('btnConv').disabled=false;setStat('status','Image loaded: '+img.width+'×'+img.height+'px');$('btnDl').style.display='none';};img.src=ev.target.result;};
+  r.readAsDataURL(f);
+}
+function loadSprFile(f){
+  const r=new FileReader();
+  r.onload=ev=>{const img=new Image();img.onload=()=>{srcSprImg=img;$('btnConvSpr').disabled=false;setStat('statusSpr','Image loaded: '+img.width+'×'+img.height+'px');$('btnDlSpr').style.display='none';};img.src=ev.target.result;};
   r.readAsDataURL(f);
 }
 
+/* ── SWATCHES ── */
 function updateSwatches(){
-  const k=$('selPal').value,p=PALS[k];
-  $('lPal').textContent=p.name;
+  const k=$('selPal').value,p=PALS[k];$('lPal').textContent=p.name;
   const w=$('swatches');w.innerHTML='';
-  p.cols.slice(0,14).forEach(c=>{
-    const d=document.createElement('div');
-    d.className='sw';d.style.background='rgb('+c[0]+','+c[1]+','+c[2]+')';
-    w.appendChild(d);
-  });
+  p.cols.slice(0,14).forEach(c=>{const d=document.createElement('div');d.className='sw';d.style.background='rgb('+c[0]+','+c[1]+','+c[2]+')';w.appendChild(d);});
+}
+function updateSprSwatches(){
+  const k=$('selSprPal').value,p=SPR_PALS[k];$('lSprPal').textContent=p.name;
+  const w=$('sprSwatches');w.innerHTML='';
+  p.cols.slice(0,14).forEach(c=>{const d=document.createElement('div');d.className='sw';d.style.background='rgb('+c[0]+','+c[1]+','+c[2]+')';w.appendChild(d);});
 }
 
+/* ── TOGGLE OUTLINE ── */
 function toggleOutline(){$('outCtrl').classList.toggle('off',!$('chkOut').checked)}
 
-function setStatus(t){$('status').textContent=t}
-function setProgress(p){$('prog').style.display=p>=100?'none':'block';$('progbar').style.width=p+'%'}
+/* ── STATUS / PROGRESS ── */
+function setStat(id,t){$(id).textContent=t}
+function setProg(id,barid,p){$(id).style.display=p>=100?'none':'block';$(barid).style.width=p+'%'}
 
-function nearest(r,g,b,pal){
-  let bi=0,bd=Infinity;
-  for(let i=0;i<pal.length;i++){
-    const c=pal[i],d=(r-c[0])*(r-c[0])*0.299+(g-c[1])*(g-c[1])*0.587+(b-c[2])*(b-c[2])*0.114;
-    if(d<bd){bd=d;bi=i}
-  }
-  return pal[bi];
+/* ── MODE SWITCH ── */
+function switchMode(name,btn){
+  document.querySelectorAll('.mode-tab').forEach(b=>b.classList.remove('on'));
+  document.querySelectorAll('.mode-page').forEach(p=>p.classList.remove('on'));
+  btn.classList.add('on');
+  $('mode-'+name).classList.add('on');
 }
 
+/* ── RESULT TABS ── */
+function switchTab(name,btn){
+  document.querySelectorAll('#mode-scene .tabbt').forEach(b=>b.classList.remove('on'));
+  document.querySelectorAll('#mode-scene .tabp').forEach(p=>p.classList.remove('on'));
+  btn.classList.add('on');$('tab-'+name).classList.add('on');
+  if(name==='cmp')requestAnimationFrame(()=>setSplit(spRatio));
+}
+function switchSprTab(name,btn){
+  document.querySelectorAll('#mode-sprite .stabbt').forEach(b=>b.classList.remove('on'));
+  document.querySelectorAll('#mode-sprite .tabp').forEach(p=>p.classList.remove('on'));
+  btn.classList.add('on');$('stab-'+name).classList.add('on');
+  if(name==='cmp')requestAnimationFrame(()=>setSplitSpr(spRatioSpr));
+}
+
+/* ── MATH HELPERS ── */
+function nearest(r,g,b,pal){
+  let bi=0,bd=Infinity;
+  for(let i=0;i<pal.length;i++){const c=pal[i],d=(r-c[0])*(r-c[0])*0.299+(g-c[1])*(g-c[1])*0.587+(b-c[2])*(b-c[2])*0.114;if(d<bd){bd=d;bi=i;}}
+  return pal[bi];
+}
 function applySat(r,g,b,s){
   const L=0.299*r+0.587*g+0.114*b;
   return[Math.max(0,Math.min(255,L+(r-L)*s)),Math.max(0,Math.min(255,L+(g-L)*s)),Math.max(0,Math.min(255,L+(b-L)*s))];
 }
-
 function sobel(gray,W,H){
   const out=new Float32Array(W*H);
   const Kx=[[-1,0,1],[-2,0,2],[-1,0,1]],Ky=[[-1,-2,-1],[0,0,0],[1,2,1]];
   for(let y=1;y<H-1;y++)for(let x=1;x<W-1;x++){
     let gx=0,gy=0;
-    for(let ky=-1;ky<=1;ky++)for(let kx=-1;kx<=1;kx++){
-      const v=gray[(y+ky)*W+(x+kx)]/255;gx+=v*Kx[ky+1][kx+1];gy+=v*Ky[ky+1][kx+1];
-    }
+    for(let ky=-1;ky<=1;ky++)for(let kx=-1;kx<=1;kx++){const v=gray[(y+ky)*W+(x+kx)]/255;gx+=v*Kx[ky+1][kx+1];gy+=v*Ky[ky+1][kx+1];}
     out[y*W+x]=Math.min(1,Math.sqrt(gx*gx+gy*gy));
   }
   return out;
 }
-
-function doConvert(){
-  if(!srcImg)return;
-  $('btnConv').disabled=true;
-  $('btnDl').style.display='none';
-  setStatus('Conjurando feitiço…');
-  setProgress(5);
-  setTimeout(_convert,40);
+function dilate(mask,W,H,r){
+  const out=new Uint8Array(W*H);
+  for(let y=0;y<H;y++)for(let x=0;x<W;x++){
+    if(mask[y*W+x])continue;
+    outer:for(let dy=-r;dy<=r;dy++)for(let dx=-r;dx<=r;dx++){
+      const nx=x+dx,ny=y+dy;
+      if(nx>=0&&nx<W&&ny>=0&&ny<H&&mask[ny*W+nx]){out[y*W+x]=1;break outer;}
+    }
+  }
+  return out;
 }
 
-function _convert(){
-  const palKey=$('selPal').value,pal=PALS[palKey].cols;
-  const dith=$('selDith').value;
-  const pixSz=parseInt($('rPx').value);
-  const contrast=parseFloat($('rCo').value);
-  const dark=parseFloat($('rDk').value);
-  const noise=parseInt($('rNo').value);
-  const sat=parseFloat($('rSa').value);
-  const outW=parseInt($('rRe').value);
-  const useOut=$('chkOut').checked;
-  const eThresh=parseInt($('rEs').value)/255;
-  const eWidth=parseInt($('rEw').value);
-  const eIrreg=parseInt($('rEi').value);
-  const eColM=$('selEc').value;
-  const eOp=parseFloat($('rEo').value);
-  const eGrain=parseInt($('rEg').value);
-
-  const sc=Math.min(1,outW/srcImg.width);
-  const W=Math.max(4,Math.round(srcImg.width*sc));
-  const H=Math.max(4,Math.round(srcImg.height*sc));
-
-  const tmp=document.createElement('canvas');tmp.width=W;tmp.height=H;
-  const tc=tmp.getContext('2d');tc.drawImage(srcImg,0,0,W,H);
-  const id=tc.getImageData(0,0,W,H);
-  const raw=id.data;
-
-  setProgress(15);
-
-  for(let i=0;i<raw.length;i+=4){
-    let r=raw[i]/255,g=raw[i+1]/255,b=raw[i+2]/255;
-    r=Math.max(0,Math.min(1,(r-.5)*contrast+.5))*dark;
-    g=Math.max(0,Math.min(1,(g-.5)*contrast+.5))*dark;
-    b=Math.max(0,Math.min(1,(b-.5)*contrast+.5))*dark;
-    const s=applySat(r*255,g*255,b*255,sat);
-    raw[i]=s[0];raw[i+1]=s[1];raw[i+2]=s[2];
-  }
-
-  if(noise>0)for(let i=0;i<raw.length;i+=4){
-    const n=(Math.random()-.5)*noise*2;
-    raw[i]=Math.max(0,Math.min(255,raw[i]+n));
-    raw[i+1]=Math.max(0,Math.min(255,raw[i+1]+n));
-    raw[i+2]=Math.max(0,Math.min(255,raw[i+2]+n));
-  }
-
-  setProgress(30);
-
-  const gray=new Uint8Array(W*H);
-  for(let i=0,p=0;i<raw.length;i+=4,p++)gray[p]=Math.round(raw[i]*0.299+raw[i+1]*0.587+raw[i+2]*0.114);
-
-  const dst=new Uint8ClampedArray(raw.length);
-
+/* ── DITHER CORE ── */
+function applyDither(raw,dst,W,H,dith,pal,spread){
   if(dith==='floyd'){
     const err=new Float32Array(W*H*3);
     for(let y=0;y<H;y++)for(let x=0;x<W;x++){
@@ -441,8 +641,7 @@ function _convert(){
       dst[idx]=nc[0];dst[idx+1]=nc[1];dst[idx+2]=nc[2];dst[idx+3]=255;
       const er=r-nc[0],eg=g-nc[1],eb=b-nc[2];
       [[1,0,7/16],[-1,1,3/16],[0,1,5/16],[1,1,1/16]].forEach(function(d){
-        const nx=x+d[0],ny=y+d[1];
-        if(nx>=0&&nx<W&&ny<H){const ni=(ny*W+nx)*3;err[ni]+=er*d[2];err[ni+1]+=eg*d[2];err[ni+2]+=eb*d[2];}
+        const nx=x+d[0],ny=y+d[1];if(nx>=0&&nx<W&&ny<H){const ni=(ny*W+nx)*3;err[ni]+=er*d[2];err[ni+1]+=eg*d[2];err[ni+2]+=eb*d[2];}
       });
     }
   } else if(dith==='atkinson'){
@@ -456,19 +655,24 @@ function _convert(){
       dst[idx]=nc[0];dst[idx+1]=nc[1];dst[idx+2]=nc[2];dst[idx+3]=255;
       const er=r-nc[0],eg=g-nc[1],eb=b-nc[2];
       [[1,0],[2,0],[-1,1],[0,1],[1,1],[0,2]].forEach(function(d){
-        const nx=x+d[0],ny=y+d[1];
-        if(nx>=0&&nx<W&&ny<H){const ni=(ny*W+nx)*3;err[ni]+=er/8;err[ni+1]+=eg/8;err[ni+2]+=eb/8;}
+        const nx=x+d[0],ny=y+d[1];if(nx>=0&&nx<W&&ny<H){const ni=(ny*W+nx)*3;err[ni]+=er/8;err[ni+1]+=eg/8;err[ni+2]+=eb/8;}
       });
     }
   } else if(dith==='ordered4'){
     for(let y=0;y<H;y++)for(let x=0;x<W;x++){
-      const idx=(y*W+x)*4,t=(M4[y%4][x%4]/16-.5)*48;
+      const idx=(y*W+x)*4,t=(M4[y%4][x%4]/16-.5)*spread;
       const nc=nearest(Math.max(0,Math.min(255,raw[idx]+t)),Math.max(0,Math.min(255,raw[idx+1]+t)),Math.max(0,Math.min(255,raw[idx+2]+t)),pal);
       dst[idx]=nc[0];dst[idx+1]=nc[1];dst[idx+2]=nc[2];dst[idx+3]=255;
     }
   } else if(dith==='ordered8'){
     for(let y=0;y<H;y++)for(let x=0;x<W;x++){
-      const idx=(y*W+x)*4,t=(M8[y%8][x%8]/64-.5)*55;
+      const idx=(y*W+x)*4,t=(M8[y%8][x%8]/64-.5)*spread;
+      const nc=nearest(Math.max(0,Math.min(255,raw[idx]+t)),Math.max(0,Math.min(255,raw[idx+1]+t)),Math.max(0,Math.min(255,raw[idx+2]+t)),pal);
+      dst[idx]=nc[0];dst[idx+1]=nc[1];dst[idx+2]=nc[2];dst[idx+3]=255;
+    }
+  } else if(dith==='halftone'){
+    for(let y=0;y<H;y++)for(let x=0;x<W;x++){
+      const idx=(y*W+x)*4,t=(MHALF[y%8][x%8]/63-.5)*60;
       const nc=nearest(Math.max(0,Math.min(255,raw[idx]+t)),Math.max(0,Math.min(255,raw[idx+1]+t)),Math.max(0,Math.min(255,raw[idx+2]+t)),pal);
       dst[idx]=nc[0];dst[idx+1]=nc[1];dst[idx+2]=nc[2];dst[idx+3]=255;
     }
@@ -478,8 +682,70 @@ function _convert(){
       dst[i]=nc[0];dst[i+1]=nc[1];dst[i+2]=nc[2];dst[i+3]=255;
     }
   }
+}
 
-  setProgress(60);
+/* ── PIXELATE ── */
+function pixelate(dstId,cv,pixSz,W,H){
+  const ctx=cv.getContext('2d');
+  if(pixSz>1){
+    const bW=Math.max(1,Math.ceil(W/pixSz)),bH=Math.max(1,Math.ceil(H/pixSz));
+    const sm=document.createElement('canvas');sm.width=bW;sm.height=bH;
+    const sc=sm.getContext('2d');sc.imageSmoothingEnabled=false;
+    const t=document.createElement('canvas');t.width=W;t.height=H;
+    t.getContext('2d').putImageData(dstId,0,0);
+    sc.drawImage(t,0,0,bW,bH);ctx.imageSmoothingEnabled=false;ctx.drawImage(sm,0,0,W,H);
+  } else {
+    ctx.putImageData(dstId,0,0);
+  }
+}
+
+/* ═══════════════════════════════════════
+   SCENE CONVERT
+═══════════════════════════════════════ */
+function doConvert(){
+  if(!srcImg)return;
+  $('btnConv').disabled=true;$('btnDl').style.display='none';
+  setStat('status','Casting spell…');setProg('prog','progbar',5);
+  setTimeout(_convert,40);
+}
+function _convert(){
+  const palKey=$('selPal').value,pal=PALS[palKey].cols;
+  const dith=$('selDith').value,pixSz=parseInt($('rPx').value);
+  const contrast=parseFloat($('rCo').value),dark=parseFloat($('rDk').value);
+  const noise=parseInt($('rNo').value),sat=parseFloat($('rSa').value);
+  const outW=parseInt($('rRe').value);
+  const useOut=$('chkOut').checked;
+  const eThresh=parseInt($('rEs').value)/255,eWidth=parseInt($('rEw').value);
+  const eIrreg=parseInt($('rEi').value),eColM=$('selEc').value;
+  const eOp=parseFloat($('rEo').value),eGrain=parseInt($('rEg').value);
+
+  const sc=Math.min(1,outW/srcImg.width);
+  const W=Math.max(4,Math.round(srcImg.width*sc)),H=Math.max(4,Math.round(srcImg.height*sc));
+
+  const tmp=document.createElement('canvas');tmp.width=W;tmp.height=H;
+  const tc=tmp.getContext('2d');tc.drawImage(srcImg,0,0,W,H);
+  const raw=tc.getImageData(0,0,W,H).data;
+
+  setProg('prog','progbar',15);
+
+  for(let i=0;i<raw.length;i+=4){
+    let r=Math.max(0,Math.min(1,(raw[i]/255-.5)*contrast+.5))*dark;
+    let g=Math.max(0,Math.min(1,(raw[i+1]/255-.5)*contrast+.5))*dark;
+    let b=Math.max(0,Math.min(1,(raw[i+2]/255-.5)*contrast+.5))*dark;
+    const s=applySat(r*255,g*255,b*255,sat);raw[i]=s[0];raw[i+1]=s[1];raw[i+2]=s[2];
+  }
+  if(noise>0)for(let i=0;i<raw.length;i+=4){
+    const n=(Math.random()-.5)*noise*2;
+    raw[i]=Math.max(0,Math.min(255,raw[i]+n));raw[i+1]=Math.max(0,Math.min(255,raw[i+1]+n));raw[i+2]=Math.max(0,Math.min(255,raw[i+2]+n));
+  }
+
+  setProg('prog','progbar',30);
+  const gray=new Uint8Array(W*H);
+  for(let i=0,p=0;i<raw.length;i+=4,p++)gray[p]=Math.round(raw[i]*0.299+raw[i+1]*0.587+raw[i+2]*0.114);
+
+  const dst=new Uint8ClampedArray(raw.length);
+  applyDither(raw,dst,W,H,dith,pal,48);
+  setProg('prog','progbar',60);
 
   if(useOut){
     const edges=sobel(gray,W,H);
@@ -487,112 +753,159 @@ function _convert(){
     if(eColM==='gold')ec=[210,158,28];
     else if(eColM==='green')ec=[55,85,18];
     else if(eColM==='white')ec=[190,180,140];
-    else{let mx=0;pal.forEach(function(c){const L=c[0]*.299+c[1]*.587+c[2]*.114;if(L>mx){mx=L;ec=c;}});}
-
+    else{let mx=0;pal.forEach(c=>{const L=c[0]*.299+c[1]*.587+c[2]*.114;if(L>mx){mx=L;ec=c;}});}
     const mask=new Float32Array(W*H);
     for(let y=0;y<H;y++)for(let x=0;x<W;x++){
       let mx=0;
-      for(let ey=-eWidth;ey<=eWidth;ey++)for(let ex=-eWidth;ex<=eWidth;ex++){
-        const nx=x+ex,ny=y+ey;
-        if(nx>=0&&nx<W&&ny>=0&&ny<H)mx=Math.max(mx,edges[ny*W+nx]);
-      }
+      for(let ey=-eWidth;ey<=eWidth;ey++)for(let ex=-eWidth;ex<=eWidth;ex++){const nx=x+ex,ny=y+ey;if(nx>=0&&nx<W&&ny>=0&&ny<H)mx=Math.max(mx,edges[ny*W+nx]);}
       if(mx>eThresh)mask[y*W+x]=mx*(eIrreg>0?(Math.random()<eIrreg/30?0:1):1);
     }
     for(let y=0;y<H;y++)for(let x=0;x<W;x++){
-      const m=mask[y*W+x];if(m<=0)continue;
-      const idx=(y*W+x)*4;
-      const gn=eGrain>0?(Math.random()-.5)*eGrain:0;
-      const a=Math.min(1,m*eOp),inv=1-a;
-      dst[idx]  =Math.max(0,Math.min(255,dst[idx]*inv+(ec[0]+gn)*a));
-      dst[idx+1]=Math.max(0,Math.min(255,dst[idx+1]*inv+(ec[1]+gn)*a));
-      dst[idx+2]=Math.max(0,Math.min(255,dst[idx+2]*inv+(ec[2]+gn)*a));
+      const m=mask[y*W+x];if(!m)continue;
+      const idx=(y*W+x)*4,gn=eGrain>0?(Math.random()-.5)*eGrain:0,a=Math.min(1,m*eOp),iv=1-a;
+      dst[idx]  =Math.max(0,Math.min(255,dst[idx]*iv+(ec[0]+gn)*a));
+      dst[idx+1]=Math.max(0,Math.min(255,dst[idx+1]*iv+(ec[1]+gn)*a));
+      dst[idx+2]=Math.max(0,Math.min(255,dst[idx+2]*iv+(ec[2]+gn)*a));
     }
   }
 
-  setProgress(80);
+  setProg('prog','progbar',80);
+  const dstCv=$('dstCanvas');dstCv.width=W;dstCv.height=H;
+  pixelate(new ImageData(dst,W,H),dstCv,pixSz,W,H);
 
-  /* render to dstCanvas */
-  const dstCv=$('dstCanvas');
-  dstCv.width=W;dstCv.height=H;
-  const dctx=dstCv.getContext('2d');
-  const dstId=new ImageData(dst,W,H);
+  // update views
+  $('ph1').style.display='none';dstCv.style.display='block';
+  $('pinfo').style.display='flex';$('infoDim').textContent=W+'×'+H+'px';$('infoPal').textContent=PALS[palKey].name;
 
-  if(pixSz>1){
-    const bW=Math.max(1,Math.ceil(W/pixSz)),bH=Math.max(1,Math.ceil(H/pixSz));
-    const sm=document.createElement('canvas');sm.width=bW;sm.height=bH;
-    const sc2=sm.getContext('2d');sc2.imageSmoothingEnabled=false;
-    const t2=document.createElement('canvas');t2.width=W;t2.height=H;
-    t2.getContext('2d').putImageData(dstId,0,0);
-    sc2.drawImage(t2,0,0,bW,bH);
-    dctx.imageSmoothingEnabled=false;
-    dctx.drawImage(sm,0,0,W,H);
-  } else {
-    dctx.putImageData(dstId,0,0);
+  $('ph2').style.display='none';$('spwrap').style.display='block';
+  const ss=$('spSrc');ss.width=W;ss.height=H;ss.getContext('2d').drawImage(srcImg,0,0,W,H);
+  const sd=$('spDst');sd.width=W;sd.height=H;sd.getContext('2d').drawImage(dstCv,0,0);
+  requestAnimationFrame(()=>setSplit(.5));
+
+  $('ph3').style.display='none';$('gview').style.display='grid';
+  const gs=$('gSrc');gs.width=W;gs.height=H;gs.getContext('2d').drawImage(srcImg,0,0,W,H);
+  const gd=$('gDst');gd.width=W;gd.height=H;gd.getContext('2d').drawImage(dstCv,0,0);
+
+  setProg('prog','progbar',100);
+  setStat('status','Done! '+W+'×'+H+'px · '+PALS[palKey].name);
+  $('btnConv').disabled=false;$('btnDl').style.display='block';
+}
+
+/* ═══════════════════════════════════════
+   SPRITE CONVERT
+═══════════════════════════════════════ */
+function doConvertSprite(){
+  if(!srcSprImg)return;
+  $('btnConvSpr').disabled=true;$('btnDlSpr').style.display='none';
+  setStat('statusSpr','Forging sprite…');setProg('progSpr','progbarSpr',5);
+  setTimeout(_convertSprite,40);
+}
+function _convertSprite(){
+  const palKey=$('selSprPal').value,pal=SPR_PALS[palKey].cols;
+  const dith=$('selSprDith').value,pixSz=parseInt($('rSprPx').value);
+  const density=parseFloat($('rSprDn').value),contrast=parseFloat($('rSprCo').value);
+  const sat=parseFloat($('rSprSa').value),noise=parseInt($('rSprNo').value);
+  const outW=parseInt($('rSprRe').value);
+  const eWidth=parseInt($('rSprEw').value),eThresh=parseInt($('rSprEs').value)/255;
+  const eOp=parseFloat($('rSprEo').value),eGrain=parseInt($('rSprGr').value);
+  const eHex=$('sprOutColor').value;
+  const eR=parseInt(eHex.slice(1,3),16),eG=parseInt(eHex.slice(3,5),16),eB=parseInt(eHex.slice(5,7),16);
+
+  const sc=Math.min(1,outW/srcSprImg.width);
+  const W=Math.max(4,Math.round(srcSprImg.width*sc)),H=Math.max(4,Math.round(srcSprImg.height*sc));
+
+  const tmp=document.createElement('canvas');tmp.width=W;tmp.height=H;
+  const tc=tmp.getContext('2d');tc.drawImage(srcSprImg,0,0,W,H);
+  const raw=tc.getImageData(0,0,W,H).data;
+
+  setProg('progSpr','progbarSpr',15);
+
+  for(let i=0;i<raw.length;i+=4){
+    let r=Math.max(0,Math.min(1,(raw[i]/255-.5)*contrast+.5));
+    let g=Math.max(0,Math.min(1,(raw[i+1]/255-.5)*contrast+.5));
+    let b=Math.max(0,Math.min(1,(raw[i+2]/255-.5)*contrast+.5));
+    const s=applySat(r*255,g*255,b*255,sat);raw[i]=s[0];raw[i+1]=s[1];raw[i+2]=s[2];
+  }
+  for(let i=0;i<raw.length;i+=4){
+    for(let c=0;c<3;c++){let v=raw[i+c]/255;v=Math.pow(v,1/density);raw[i+c]=Math.round(v*255);}
+  }
+  if(noise>0)for(let i=0;i<raw.length;i+=4){
+    const n=(Math.random()-.5)*noise*2;
+    raw[i]=Math.max(0,Math.min(255,raw[i]+n));raw[i+1]=Math.max(0,Math.min(255,raw[i+1]+n));raw[i+2]=Math.max(0,Math.min(255,raw[i+2]+n));
   }
 
-  /* update all views */
-  $('ph1').style.display='none';
-  dstCv.style.display='block';
-  $('pinfo').style.display='flex';
-  $('infoDim').textContent=W+'×'+H+'px';
-  $('infoPal').textContent=PALS[palKey].name+(useOut?' + Contorno':'');
+  setProg('progSpr','progbarSpr',30);
+  const gray=new Uint8Array(W*H);
+  for(let i=0,p=0;i<raw.length;i+=4,p++)gray[p]=Math.round(raw[i]*0.299+raw[i+1]*0.587+raw[i+2]*0.114);
 
-  $('ph2').style.display='none';
-  const spw=$('spwrap');spw.style.display='block';
-  const ss=$('spSrc');ss.width=W;ss.height=H;
-  ss.getContext('2d').drawImage(srcImg,0,0,W,H);
-  const sd=$('spDst');sd.width=W;sd.height=H;
-  sd.getContext('2d').drawImage(dstCv,0,0);
-  requestAnimationFrame(function(){setSplit(.5)});
+  const dst=new Uint8ClampedArray(raw.length);
+  applyDither(raw,dst,W,H,dith,pal,52);
+  setProg('progSpr','progbarSpr',60);
 
-  $('ph3').style.display='none';
-  $('gview').style.display='grid';
-  const gs=$('gSrc');gs.width=W;gs.height=H;
-  gs.getContext('2d').drawImage(srcImg,0,0,W,H);
-  const gd=$('gDst');gd.width=W;gd.height=H;
-  gd.getContext('2d').drawImage(dstCv,0,0);
+  // solid outline
+  const edges=sobel(gray,W,H);
+  const edgeMask=new Uint8Array(W*H);
+  for(let i=0;i<W*H;i++)if(edges[i]>eThresh)edgeMask[i]=1;
+  const thick=dilate(edgeMask,W,H,eWidth);
+  for(let y=0;y<H;y++)for(let x=0;x<W;x++){
+    if(!thick[y*W+x])continue;
+    const idx=(y*W+x)*4,gn=eGrain>0?(Math.random()-.5)*eGrain:0,a=eOp,iv=1-a;
+    dst[idx]  =Math.max(0,Math.min(255,dst[idx]*iv+(eR+gn)*a));
+    dst[idx+1]=Math.max(0,Math.min(255,dst[idx+1]*iv+(eG+gn)*a));
+    dst[idx+2]=Math.max(0,Math.min(255,dst[idx+2]*iv+(eB+gn)*a));
+  }
 
-  setProgress(100);
-  setStatus('Concluído! '+W+'×'+H+'px · '+PALS[palKey].name+(useOut?' + Contorno':''));
-  $('btnConv').disabled=false;
-  $('btnDl').style.display='block';
+  setProg('progSpr','progbarSpr',80);
+  const sprCv=$('sprCanvas');sprCv.width=W;sprCv.height=H;
+  pixelate(new ImageData(dst,W,H),sprCv,pixSz,W,H);
+
+  $('sph1').style.display='none';sprCv.style.display='block';
+  $('sprInfo').style.display='flex';$('sprDim').textContent=W+'×'+H+'px';$('sprPalName').textContent=SPR_PALS[palKey].name;
+
+  $('sph2').style.display='none';$('spwrapSpr').style.display='block';
+  const ss=$('sspSrc');ss.width=W;ss.height=H;ss.getContext('2d').drawImage(srcSprImg,0,0,W,H);
+  const sd=$('sspDst');sd.width=W;sd.height=H;sd.getContext('2d').drawImage(sprCv,0,0);
+  requestAnimationFrame(()=>setSplitSpr(.5));
+
+  $('sph3').style.display='none';$('sgview').style.display='grid';
+  const gs=$('sgSrc');gs.width=W;gs.height=H;gs.getContext('2d').drawImage(srcSprImg,0,0,W,H);
+  const gd=$('sgDst');gd.width=W;gd.height=H;gd.getContext('2d').drawImage(sprCv,0,0);
+
+  setProg('progSpr','progbarSpr',100);
+  setStat('statusSpr','Done! '+W+'×'+H+'px · '+SPR_PALS[palKey].name);
+  $('btnConvSpr').disabled=false;$('btnDlSpr').style.display='block';
 }
 
-/* TABS */
-function switchTab(name,btn){
-  document.querySelectorAll('.tabbt').forEach(function(b){b.classList.remove('on')});
-  document.querySelectorAll('.tabp').forEach(function(p){p.classList.remove('on')});
-  btn.classList.add('on');
-  $('tab-'+name).classList.add('on');
-  if(name==='cmp')requestAnimationFrame(function(){setSplit(spRatio)});
-}
-
-/* SPLIT */
+/* ── SPLIT SCENE ── */
 var spRatio=.5,spDrag=false;
 function setSplit(r){
   spRatio=Math.max(.02,Math.min(.98,r));
   const pct=(spRatio*100).toFixed(1)+'%';
-  $('spover').style.width=pct;
-  $('spdiv').style.left=pct;
-  $('sphand').style.left=pct;
-  const w=$('spwrap').offsetWidth;
-  $('spDst').style.width=w+'px';
-  $('spDst').style.height='auto';
+  $('spover').style.width=pct;$('spdiv').style.left=pct;$('sphand').style.left=pct;
+  const w=$('spwrap').offsetWidth;$('spDst').style.width=w+'px';$('spDst').style.height='auto';
 }
 function spStart(e){spDrag=true;spMove(e)}
-function spMove(e){
-  if(!spDrag)return;
-  const r=$('spwrap').getBoundingClientRect();
-  const cx=e.touches?e.touches[0].clientX:e.clientX;
-  setSplit((cx-r.left)/r.width);
-}
+function spMove(e){if(!spDrag)return;const r=$('spwrap').getBoundingClientRect();const cx=e.touches?e.touches[0].clientX:e.clientX;setSplit((cx-r.left)/r.width);}
 function spEnd(){spDrag=false}
-document.addEventListener('mousemove',spMove);
-document.addEventListener('mouseup',spEnd);
-document.addEventListener('touchmove',spMove,{passive:true});
-document.addEventListener('touchend',spEnd);
 
-/* ZOOM LENS */
+/* ── SPLIT SPRITE ── */
+var spRatioSpr=.5,spDragSpr=false;
+function setSplitSpr(r){
+  spRatioSpr=Math.max(.02,Math.min(.98,r));
+  const pct=(spRatioSpr*100).toFixed(1)+'%';
+  $('spoverSpr').style.width=pct;$('spdivSpr').style.left=pct;$('sphandSpr').style.left=pct;
+  const w=$('spwrapSpr').offsetWidth;$('sspDst').style.width=w+'px';$('sspDst').style.height='auto';
+}
+function spStartSpr(e){spDragSpr=true;spMoveSpr(e)}
+function spMoveSpr(e){if(!spDragSpr)return;const r=$('spwrapSpr').getBoundingClientRect();const cx=e.touches?e.touches[0].clientX:e.clientX;setSplitSpr((cx-r.left)/r.width);}
+function spEndSpr(){spDragSpr=false}
+
+document.addEventListener('mousemove',e=>{spMove(e);spMoveSpr(e)});
+document.addEventListener('mouseup',()=>{spEnd();spEndSpr()});
+document.addEventListener('touchmove',e=>{spMove(e);spMoveSpr(e)},{passive:true});
+document.addEventListener('touchend',()=>{spEnd();spEndSpr()});
+
+/* ── ZOOM LENS ── */
 var LSIZE=176,LZOOM=4;
 function lensMove(e,cv){
   var lens=$('lens'),lc=$('lensCanvas');
@@ -600,8 +913,7 @@ function lensMove(e,cv){
   var mx=e.clientX-rect.left,my=e.clientY-rect.top;
   var sx=mx*(cv.width/rect.width),sy=my*(cv.height/rect.height);
   var sw=LSIZE/LZOOM,sh=LSIZE/LZOOM;
-  var ox=Math.max(0,Math.min(cv.width-sw,sx-sw/2));
-  var oy=Math.max(0,Math.min(cv.height-sh,sy-sh/2));
+  var ox=Math.max(0,Math.min(cv.width-sw,sx-sw/2)),oy=Math.max(0,Math.min(cv.height-sh,sy-sh/2));
   lc.width=LSIZE;lc.height=LSIZE;
   var ctx=lc.getContext('2d');ctx.imageSmoothingEnabled=false;
   ctx.drawImage(cv,ox,oy,sw,sh,0,0,LSIZE,LSIZE);
@@ -612,13 +924,9 @@ function lensMove(e,cv){
 }
 function lensHide(){$('lens').style.display='none'}
 
-/* DOWNLOAD */
-function doDownload(){
-  var a=document.createElement('a');
-  a.download='dungeon_style.png';
-  a.href=$('dstCanvas').toDataURL('image/png');
-  a.click();
-}
+/* ── DOWNLOAD ── */
+function doDownload(){var a=document.createElement('a');a.download='dungeon_scene.png';a.href=$('dstCanvas').toDataURL('image/png');a.click();}
+function doDownloadSprite(){var a=document.createElement('a');a.download='dungeon_sprite.png';a.href=$('sprCanvas').toDataURL('image/png');a.click();}
 </script>
 </body>
 </html>
