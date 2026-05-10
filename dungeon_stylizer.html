@@ -628,72 +628,93 @@ function dilate(mask,W,H,r){
   return out;
 }
 
-/* ── DITHER CORE ── */
+/* ── DITHER CORE — alpha-preserving ── */
+// Pixels with alpha < ALPHA_THRESH are kept fully transparent and skipped.
+// Semi-transparent pixels are stylized but keep their original alpha.
+const ALPHA_THRESH = 10;
+
 function applyDither(raw,dst,W,H,dith,pal,spread){
   if(dith==='floyd'){
     const err=new Float32Array(W*H*3);
     for(let y=0;y<H;y++)for(let x=0;x<W;x++){
       const idx=(y*W+x)*4,ei=(y*W+x)*3;
+      const a=raw[idx+3];
+      if(a<ALPHA_THRESH){dst[idx]=0;dst[idx+1]=0;dst[idx+2]=0;dst[idx+3]=0;continue;}
       const r=Math.max(0,Math.min(255,raw[idx]+err[ei]));
       const g=Math.max(0,Math.min(255,raw[idx+1]+err[ei+1]));
       const b=Math.max(0,Math.min(255,raw[idx+2]+err[ei+2]));
       const nc=nearest(r,g,b,pal);
-      dst[idx]=nc[0];dst[idx+1]=nc[1];dst[idx+2]=nc[2];dst[idx+3]=255;
+      dst[idx]=nc[0];dst[idx+1]=nc[1];dst[idx+2]=nc[2];dst[idx+3]=a;
       const er=r-nc[0],eg=g-nc[1],eb=b-nc[2];
       [[1,0,7/16],[-1,1,3/16],[0,1,5/16],[1,1,1/16]].forEach(function(d){
-        const nx=x+d[0],ny=y+d[1];if(nx>=0&&nx<W&&ny<H){const ni=(ny*W+nx)*3;err[ni]+=er*d[2];err[ni+1]+=eg*d[2];err[ni+2]+=eb*d[2];}
+        const nx=x+d[0],ny=y+d[1];
+        if(nx>=0&&nx<W&&ny<H&&raw[(ny*W+nx)*4+3]>=ALPHA_THRESH){const ni=(ny*W+nx)*3;err[ni]+=er*d[2];err[ni+1]+=eg*d[2];err[ni+2]+=eb*d[2];}
       });
     }
   } else if(dith==='atkinson'){
     const err=new Float32Array(W*H*3);
     for(let y=0;y<H;y++)for(let x=0;x<W;x++){
       const idx=(y*W+x)*4,ei=(y*W+x)*3;
+      const a=raw[idx+3];
+      if(a<ALPHA_THRESH){dst[idx]=0;dst[idx+1]=0;dst[idx+2]=0;dst[idx+3]=0;continue;}
       const r=Math.max(0,Math.min(255,raw[idx]+err[ei]));
       const g=Math.max(0,Math.min(255,raw[idx+1]+err[ei+1]));
       const b=Math.max(0,Math.min(255,raw[idx+2]+err[ei+2]));
       const nc=nearest(r,g,b,pal);
-      dst[idx]=nc[0];dst[idx+1]=nc[1];dst[idx+2]=nc[2];dst[idx+3]=255;
+      dst[idx]=nc[0];dst[idx+1]=nc[1];dst[idx+2]=nc[2];dst[idx+3]=a;
       const er=r-nc[0],eg=g-nc[1],eb=b-nc[2];
       [[1,0],[2,0],[-1,1],[0,1],[1,1],[0,2]].forEach(function(d){
-        const nx=x+d[0],ny=y+d[1];if(nx>=0&&nx<W&&ny<H){const ni=(ny*W+nx)*3;err[ni]+=er/8;err[ni+1]+=eg/8;err[ni+2]+=eb/8;}
+        const nx=x+d[0],ny=y+d[1];
+        if(nx>=0&&nx<W&&ny<H&&raw[(ny*W+nx)*4+3]>=ALPHA_THRESH){const ni=(ny*W+nx)*3;err[ni]+=er/8;err[ni+1]+=eg/8;err[ni+2]+=eb/8;}
       });
     }
   } else if(dith==='ordered4'){
     for(let y=0;y<H;y++)for(let x=0;x<W;x++){
-      const idx=(y*W+x)*4,t=(M4[y%4][x%4]/16-.5)*spread;
+      const idx=(y*W+x)*4,a=raw[idx+3];
+      if(a<ALPHA_THRESH){dst[idx]=0;dst[idx+1]=0;dst[idx+2]=0;dst[idx+3]=0;continue;}
+      const t=(M4[y%4][x%4]/16-.5)*spread;
       const nc=nearest(Math.max(0,Math.min(255,raw[idx]+t)),Math.max(0,Math.min(255,raw[idx+1]+t)),Math.max(0,Math.min(255,raw[idx+2]+t)),pal);
-      dst[idx]=nc[0];dst[idx+1]=nc[1];dst[idx+2]=nc[2];dst[idx+3]=255;
+      dst[idx]=nc[0];dst[idx+1]=nc[1];dst[idx+2]=nc[2];dst[idx+3]=a;
     }
   } else if(dith==='ordered8'){
     for(let y=0;y<H;y++)for(let x=0;x<W;x++){
-      const idx=(y*W+x)*4,t=(M8[y%8][x%8]/64-.5)*spread;
+      const idx=(y*W+x)*4,a=raw[idx+3];
+      if(a<ALPHA_THRESH){dst[idx]=0;dst[idx+1]=0;dst[idx+2]=0;dst[idx+3]=0;continue;}
+      const t=(M8[y%8][x%8]/64-.5)*spread;
       const nc=nearest(Math.max(0,Math.min(255,raw[idx]+t)),Math.max(0,Math.min(255,raw[idx+1]+t)),Math.max(0,Math.min(255,raw[idx+2]+t)),pal);
-      dst[idx]=nc[0];dst[idx+1]=nc[1];dst[idx+2]=nc[2];dst[idx+3]=255;
+      dst[idx]=nc[0];dst[idx+1]=nc[1];dst[idx+2]=nc[2];dst[idx+3]=a;
     }
   } else if(dith==='halftone'){
     for(let y=0;y<H;y++)for(let x=0;x<W;x++){
-      const idx=(y*W+x)*4,t=(MHALF[y%8][x%8]/63-.5)*60;
+      const idx=(y*W+x)*4,a=raw[idx+3];
+      if(a<ALPHA_THRESH){dst[idx]=0;dst[idx+1]=0;dst[idx+2]=0;dst[idx+3]=0;continue;}
+      const t=(MHALF[y%8][x%8]/63-.5)*60;
       const nc=nearest(Math.max(0,Math.min(255,raw[idx]+t)),Math.max(0,Math.min(255,raw[idx+1]+t)),Math.max(0,Math.min(255,raw[idx+2]+t)),pal);
-      dst[idx]=nc[0];dst[idx+1]=nc[1];dst[idx+2]=nc[2];dst[idx+3]=255;
+      dst[idx]=nc[0];dst[idx+1]=nc[1];dst[idx+2]=nc[2];dst[idx+3]=a;
     }
   } else {
     for(let i=0;i<raw.length;i+=4){
+      const a=raw[i+3];
+      if(a<ALPHA_THRESH){dst[i]=0;dst[i+1]=0;dst[i+2]=0;dst[i+3]=0;continue;}
       const nc=nearest(raw[i],raw[i+1],raw[i+2],pal);
-      dst[i]=nc[0];dst[i+1]=nc[1];dst[i+2]=nc[2];dst[i+3]=255;
+      dst[i]=nc[0];dst[i+1]=nc[1];dst[i+2]=nc[2];dst[i+3]=a;
     }
   }
 }
 
-/* ── PIXELATE ── */
+/* ── PIXELATE — alpha-preserving ── */
 function pixelate(dstId,cv,pixSz,W,H){
   const ctx=cv.getContext('2d');
+  ctx.clearRect(0,0,W,H); // ensure transparent background
   if(pixSz>1){
     const bW=Math.max(1,Math.ceil(W/pixSz)),bH=Math.max(1,Math.ceil(H/pixSz));
     const sm=document.createElement('canvas');sm.width=bW;sm.height=bH;
     const sc=sm.getContext('2d');sc.imageSmoothingEnabled=false;
     const t=document.createElement('canvas');t.width=W;t.height=H;
     t.getContext('2d').putImageData(dstId,0,0);
-    sc.drawImage(t,0,0,bW,bH);ctx.imageSmoothingEnabled=false;ctx.drawImage(sm,0,0,W,H);
+    sc.drawImage(t,0,0,bW,bH);
+    ctx.imageSmoothingEnabled=false;
+    ctx.drawImage(sm,0,0,W,H);
   } else {
     ctx.putImageData(dstId,0,0);
   }
@@ -729,19 +750,21 @@ function _convert(){
   setProg('prog','progbar',15);
 
   for(let i=0;i<raw.length;i+=4){
+    if(raw[i+3]<ALPHA_THRESH)continue; // skip transparent
     let r=Math.max(0,Math.min(1,(raw[i]/255-.5)*contrast+.5))*dark;
     let g=Math.max(0,Math.min(1,(raw[i+1]/255-.5)*contrast+.5))*dark;
     let b=Math.max(0,Math.min(1,(raw[i+2]/255-.5)*contrast+.5))*dark;
     const s=applySat(r*255,g*255,b*255,sat);raw[i]=s[0];raw[i+1]=s[1];raw[i+2]=s[2];
   }
   if(noise>0)for(let i=0;i<raw.length;i+=4){
+    if(raw[i+3]<ALPHA_THRESH)continue;
     const n=(Math.random()-.5)*noise*2;
     raw[i]=Math.max(0,Math.min(255,raw[i]+n));raw[i+1]=Math.max(0,Math.min(255,raw[i+1]+n));raw[i+2]=Math.max(0,Math.min(255,raw[i+2]+n));
   }
 
   setProg('prog','progbar',30);
   const gray=new Uint8Array(W*H);
-  for(let i=0,p=0;i<raw.length;i+=4,p++)gray[p]=Math.round(raw[i]*0.299+raw[i+1]*0.587+raw[i+2]*0.114);
+  for(let i=0,p=0;i<raw.length;i+=4,p++)gray[p]=raw[i+3]<ALPHA_THRESH?0:Math.round(raw[i]*0.299+raw[i+1]*0.587+raw[i+2]*0.114);
 
   const dst=new Uint8ClampedArray(raw.length);
   applyDither(raw,dst,W,H,dith,pal,48);
@@ -762,7 +785,8 @@ function _convert(){
     }
     for(let y=0;y<H;y++)for(let x=0;x<W;x++){
       const m=mask[y*W+x];if(!m)continue;
-      const idx=(y*W+x)*4,gn=eGrain>0?(Math.random()-.5)*eGrain:0,a=Math.min(1,m*eOp),iv=1-a;
+      const idx=(y*W+x)*4;if(dst[idx+3]<ALPHA_THRESH)continue;
+      const gn=eGrain>0?(Math.random()-.5)*eGrain:0,a=Math.min(1,m*eOp),iv=1-a;
       dst[idx]  =Math.max(0,Math.min(255,dst[idx]*iv+(ec[0]+gn)*a));
       dst[idx+1]=Math.max(0,Math.min(255,dst[idx+1]*iv+(ec[1]+gn)*a));
       dst[idx+2]=Math.max(0,Math.min(255,dst[idx+2]*iv+(ec[2]+gn)*a));
@@ -821,38 +845,56 @@ function _convertSprite(){
   setProg('progSpr','progbarSpr',15);
 
   for(let i=0;i<raw.length;i+=4){
+    if(raw[i+3]<ALPHA_THRESH)continue;
     let r=Math.max(0,Math.min(1,(raw[i]/255-.5)*contrast+.5));
     let g=Math.max(0,Math.min(1,(raw[i+1]/255-.5)*contrast+.5));
     let b=Math.max(0,Math.min(1,(raw[i+2]/255-.5)*contrast+.5));
     const s=applySat(r*255,g*255,b*255,sat);raw[i]=s[0];raw[i+1]=s[1];raw[i+2]=s[2];
   }
   for(let i=0;i<raw.length;i+=4){
+    if(raw[i+3]<ALPHA_THRESH)continue;
     for(let c=0;c<3;c++){let v=raw[i+c]/255;v=Math.pow(v,1/density);raw[i+c]=Math.round(v*255);}
   }
   if(noise>0)for(let i=0;i<raw.length;i+=4){
+    if(raw[i+3]<ALPHA_THRESH)continue;
     const n=(Math.random()-.5)*noise*2;
     raw[i]=Math.max(0,Math.min(255,raw[i]+n));raw[i+1]=Math.max(0,Math.min(255,raw[i+1]+n));raw[i+2]=Math.max(0,Math.min(255,raw[i+2]+n));
   }
 
   setProg('progSpr','progbarSpr',30);
   const gray=new Uint8Array(W*H);
-  for(let i=0,p=0;i<raw.length;i+=4,p++)gray[p]=Math.round(raw[i]*0.299+raw[i+1]*0.587+raw[i+2]*0.114);
+  for(let i=0,p=0;i<raw.length;i+=4,p++)gray[p]=raw[i+3]<ALPHA_THRESH?0:Math.round(raw[i]*0.299+raw[i+1]*0.587+raw[i+2]*0.114);
 
   const dst=new Uint8ClampedArray(raw.length);
   applyDither(raw,dst,W,H,dith,pal,52);
   setProg('progSpr','progbarSpr',60);
 
-  // solid outline
+  // solid outline — paint on the transparent pixels at the edge of the sprite
+  // so the outline appears *outside* the sprite, not over it
   const edges=sobel(gray,W,H);
   const edgeMask=new Uint8Array(W*H);
   for(let i=0;i<W*H;i++)if(edges[i]>eThresh)edgeMask[i]=1;
   const thick=dilate(edgeMask,W,H,eWidth);
   for(let y=0;y<H;y++)for(let x=0;x<W;x++){
     if(!thick[y*W+x])continue;
-    const idx=(y*W+x)*4,gn=eGrain>0?(Math.random()-.5)*eGrain:0,a=eOp,iv=1-a;
-    dst[idx]  =Math.max(0,Math.min(255,dst[idx]*iv+(eR+gn)*a));
-    dst[idx+1]=Math.max(0,Math.min(255,dst[idx+1]*iv+(eG+gn)*a));
-    dst[idx+2]=Math.max(0,Math.min(255,dst[idx+2]*iv+(eB+gn)*a));
+    const idx=(y*W+x)*4;
+    const origA=dst[idx+3];
+    // only paint on pixels that are at edge (transparent→opaque border) or opaque
+    // for transparent pixels in the dilated zone: paint them as outline
+    const gn=eGrain>0?(Math.random()-.5)*eGrain:0;
+    if(origA<ALPHA_THRESH){
+      // transparent pixel adjacent to opaque — paint as solid outline
+      dst[idx]  =Math.max(0,Math.min(255,eR+gn));
+      dst[idx+1]=Math.max(0,Math.min(255,eG+gn));
+      dst[idx+2]=Math.max(0,Math.min(255,eB+gn));
+      dst[idx+3]=Math.round(eOp*255);
+    } else {
+      // opaque pixel — blend outline on top
+      const a=eOp,iv=1-a;
+      dst[idx]  =Math.max(0,Math.min(255,dst[idx]*iv+(eR+gn)*a));
+      dst[idx+1]=Math.max(0,Math.min(255,dst[idx+1]*iv+(eG+gn)*a));
+      dst[idx+2]=Math.max(0,Math.min(255,dst[idx+2]*iv+(eB+gn)*a));
+    }
   }
 
   setProg('progSpr','progbarSpr',80);
